@@ -1,5 +1,5 @@
 {
-    "name": "@armathai/lib1",
+    "name": "@armathai/pixi-trail",
     "version": "2.0.0",
     "license": "MIT",
     "source": "src/index.ts",
@@ -12,22 +12,26 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:armathai/lib1.git"
+        "url": "git@github.com:armathai/trail2d.git"
     },
     "bugs": {
-        "url": "https://github.com/armathai/lib1/issues"
+        "url": "https://github.com/armathai/trail2d/issues"
     },
     "keywords": [
         "key1",
         "key2"
     ],
-    "homepage": "https://github.com/armathai/lib1#readme",
+    "homepage": "https://github.com/armathai/trail2d#readme",
     "scripts": {
         "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
         "test": "jest --config jestconfig.json",
         "lint": "eslint 'src/**/*.{js,ts,ts}'",
         "build": "npm run clean && tsc --build"
     },
-    "dependencies": {},
-    "devDependencies": {}
+    "dependencies": {
+        "stats.js": "^0.17.0"
+    },
+    "devDependencies": {
+        "@types/stats.js": "^0.17.0"
+    }
 }

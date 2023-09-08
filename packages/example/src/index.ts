@@ -1,9 +1,20 @@
-import { EXPORT_FROM_LIB1 } from '@armathai/lib1';
-import { EXPORT_FROM_LIB2 } from '@armathai/lib2';
+import { Application } from 'pixi.js';
+import Stats from 'stats.js';
+import { RopeBasicScene } from './scenes/rope-basic-scene';
 
-new (class {
+class Game extends Application<HTMLCanvasElement> {
     public constructor() {
-        console.warn(EXPORT_FROM_LIB1);
-        console.warn(EXPORT_FROM_LIB2);
+        super({ resizeTo: window, backgroundColor: 0x000000, hello: true });
+        this.ticker.maxFPS = 60;
     }
-})();
+}
+
+window.addEventListener('load', () => {
+    const stats = new Stats();
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(stats.dom);
+
+    const game = new Game();
+    document.body.appendChild(game.view);
+    game.stage.addChild(new RopeBasicScene());
+});
