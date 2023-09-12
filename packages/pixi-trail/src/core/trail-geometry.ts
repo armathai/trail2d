@@ -6,7 +6,7 @@ export class TrailGeometry extends MeshGeometry {
 
     public points: IPoint[];
 
-    public constructor(points: IPoint[], textureScale?: number) {
+    public constructor(points: IPoint[], _textureScale?: number) {
         super(
             new Float32Array(points.length * 4),
             new Float32Array(points.length * 4),
@@ -14,20 +14,19 @@ export class TrailGeometry extends MeshGeometry {
         );
         this.points = points;
 
-        void textureScale; // ToDo: solve this issue
-        // this.textureScale = textureScale;
+        // this.textureScale = textureScale; // ToDo: solve this issue
 
         this._build();
         this.updateAttributes();
     }
 
     public update(): void {
-        if (this.textureScale > 0) {
-            this._build(); // we need to update UVs
-            this.updateAttributes();
-        } else {
-            // this.updateVertices();
-        }
+        // if (this.textureScale > 0) {
+        //     this._build(); // we need to update UVs
+        //     this.updateAttributes();
+        // } else {
+        //     // this.updateVertices();
+        // }
     }
 
     public addPoint(point: IPoint): void {

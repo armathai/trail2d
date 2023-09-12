@@ -1,6 +1,6 @@
 import { Application } from 'pixi.js';
 import Stats from 'stats.js';
-import { RopeBasicScene } from './scenes/rope-basic-scene';
+import { TrailPerformanceScene } from './scenes/trail-performance-scene';
 
 class Game extends Application<HTMLCanvasElement> {
     public constructor() {
@@ -16,5 +16,5 @@ window.addEventListener('load', () => {
 
     const game = new Game();
     document.body.appendChild(game.view);
-    game.stage.addChild(new RopeBasicScene());
+    game.stage.addChild(new TrailPerformanceScene());
 });
