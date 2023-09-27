@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Color, MeshMaterial, Program, Texture } from 'pixi.js';
-import { fragment, vertex } from '../shaders/shaders';
+import { TRAIL_CUSTOMIZABLE_FRAGMENT_SHADER, TRAIL_CUSTOMIZABLE_VERTEX_SHADER } from '../shaders/shaders';
 import { TrailMaterialConfig } from '../types';
 
-export class TrailMaterial extends MeshMaterial {
-    public constructor(config: TrailMaterialConfig, trailWidth: number, sharpness: boolean) {
+export class TrailCustomizableMaterial extends MeshMaterial {
+    public constructor(config: TrailMaterialConfig) {
         const {
             rough,
             latitudeColorA,
@@ -38,13 +38,11 @@ export class TrailMaterial extends MeshMaterial {
             longitudeAlphaIntensity,
             latitudeAlphaIntensity,
             colorsProportions,
-            uTrailWidth: trailWidth,
-            uSharpness: sharpness,
         };
 
         super(Texture.WHITE, {
-            program: new Program(vertex, fragment),
             uniforms,
+            program: new Program(TRAIL_CUSTOMIZABLE_VERTEX_SHADER, TRAIL_CUSTOMIZABLE_FRAGMENT_SHADER),
         });
     }
 }

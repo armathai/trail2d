@@ -4,11 +4,10 @@ export interface IDisplayObjectLike {
 }
 
 export type TrailConfig = {
-    sharpness: boolean;
     trailWidth: number;
     lifeSpan: number;
     minimalSquareDistance: number;
-    material: TrailMaterialConfig;
+    sharpness: boolean;
 };
 
 export type TrailMaterialConfig = {

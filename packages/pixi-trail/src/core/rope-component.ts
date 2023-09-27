@@ -1,4 +1,5 @@
-import { Graphics, IPoint, Mesh, MeshMaterial, Point, Renderer } from 'pixi.js';
+import { Graphics, IPoint, Mesh, Point, Renderer } from 'pixi.js';
+import { TrailMaterial } from '../materials/trail-material';
 import { TrailGeometry } from './trail-geometry';
 
 /**
@@ -14,9 +15,12 @@ export class RopeComponent extends Mesh {
      * @param meshMaterial - The material to use on the rope.
      * @param ropeWidth - The width of rope.
      */
-    public constructor(points: IPoint[], meshMaterial: MeshMaterial) {
+    public constructor(points: IPoint[], meshMaterial: TrailMaterial, width: number, sharpness = false) {
         super(new TrailGeometry(points), meshMaterial);
         this.points = (<TrailGeometry>this.geometry).points;
+        this.shader.uniforms['uTrailWidth'] = width;
+        this.shader.uniforms['uSharpness'] = sharpness;
+
         // this.drawMode = DRAW_MODES.LINE_STRIP;
 
         this.shader.uniforms['uNodesCount'] = this.points.length - 1;

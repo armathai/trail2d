@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { TrailComponent, TrailMaterial } from '@armathai/pixi-trail';
-import { Container, Texture } from 'pixi.js';
-import stripes from '../../assets/sprite.png';
+import { TrailComponent, TrailCustomizableMaterial } from '@armathai/pixi-trail';
+import { Container } from 'pixi.js';
 import { SceneAbstract } from './scene-abstract';
 
-export class TrailBasicScene extends SceneAbstract {
+export class TrailCustomizableMaterialScene extends SceneAbstract {
     private _trail: TrailComponent;
     private _ball: Container;
 
@@ -23,7 +22,24 @@ export class TrailBasicScene extends SceneAbstract {
                 minimalSquareDistance: 10,
                 sharpness: false,
             },
-            new TrailMaterial(Texture.from(stripes))
+            new TrailCustomizableMaterial({
+                latitudeColorA: '#ff0000',
+                a_latitudeColorA: 1,
+                latitudeColorB: '#fff000',
+                a_latitudeColorB: 1,
+                longitudeColorA: '#ffffff',
+                a_longitudeColorA: 1,
+                longitudeColorB: '#ffffff',
+                a_longitudeColorB: 0,
+                colorStart: 0.0,
+                colorEnd: 1.0,
+                offset: 0.5,
+                linesCount: 1.0,
+                longitudeAlphaIntensity: 0.0,
+                latitudeAlphaIntensity: 0.0,
+                rough: true,
+                colorsProportions: 0.5,
+            })
         );
         this.addChild((this._trail = trail));
         // trail.setDebugger(true);

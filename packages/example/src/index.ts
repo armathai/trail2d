@@ -1,5 +1,9 @@
-import { Application } from 'pixi.js';
+import { Application, Container, Ticker } from 'pixi.js';
 import Stats from 'stats.js';
+import { RopeBasicScene } from './scenes/rope-basic-scene';
+import { SceneAbstract } from './scenes/scene-abstract';
+import { TrailBasicScene } from './scenes/trail-basic-scene';
+import { TrailCustomizableMaterialScene } from './scenes/trail-customizable-material-scene';
 import { TrailPerformanceScene } from './scenes/trail-performance-scene';
 
 class Game extends Application<HTMLCanvasElement> {
@@ -16,5 +20,37 @@ window.addEventListener('load', () => {
 
     const game = new Game();
     document.body.appendChild(game.view);
-    game.stage.addChild(new TrailPerformanceScene());
+
+    let scene: Container;
+    let exampleName: string;
+
+    exampleName = 'simpleTrail';
+    exampleName = 'customMaterial';
+    exampleName = 'performance';
+    exampleName = 'rope';
+
+    switch (exampleName) {
+        case 'rope':
+            scene = new RopeBasicScene();
+            break;
+        case 'simpleTrail':
+            scene = new TrailBasicScene();
+            break;
+        case 'customMaterial':
+            scene = new TrailCustomizableMaterialScene();
+            break;
+        case 'performance':
+            scene = new TrailPerformanceScene();
+            break;
+
+        default:
+            break;
+    }
+
+    game.stage.addChild(scene);
+
+    const ticker = Ticker.shared;
+    ticker.add(() => {
+        (scene as SceneAbstract).update(ticker.lastTime);
+    });
 });

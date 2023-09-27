@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { RopeComponent, TrailMaterial } from '@armathai/pixi-trail';
-import { Container, Point, Ticker } from 'pixi.js';
+import { Point, Texture } from 'pixi.js';
+import stripes from '../../assets/sprite.png';
+import { SceneAbstract } from './scene-abstract';
 
-export class RopeBasicScene extends Container {
+export class RopeBasicScene extends SceneAbstract {
+    private _rope: RopeComponent;
+
     public constructor() {
         super();
 
@@ -15,35 +19,14 @@ export class RopeBasicScene extends Container {
                 new Point(370, 110),
                 new Point(440, 160),
             ],
-            new TrailMaterial(
-                {
-                    latitudeColorA: '#ff0000',
-                    a_latitudeColorA: 1,
-                    latitudeColorB: '#0000ff',
-                    a_latitudeColorB: 1,
-                    longitudeColorA: '#ffffff',
-                    a_longitudeColorA: 1,
-                    longitudeColorB: '#ffffff',
-                    a_longitudeColorB: 0,
-                    colorStart: 0.0,
-                    colorEnd: 1.0,
-                    offset: 0.5,
-                    linesCount: 1.0,
-                    longitudeAlphaIntensity: 0.0,
-                    latitudeAlphaIntensity: 0.0,
-                    rough: true,
-                    colorsProportions: 0.5,
-                },
-                50,
-                false
-            )
+            new TrailMaterial(Texture.from(stripes)),
+            50
         );
-        this.addChild(rope);
+        this.addChild((this._rope = rope));
         rope.setDebugger(true);
+    }
 
-        const ticker = Ticker.shared;
-        ticker.add(() => {
-            rope.update();
-        });
+    public update(elapsed: number): void {
+        this._rope.update(elapsed);
     }
 }

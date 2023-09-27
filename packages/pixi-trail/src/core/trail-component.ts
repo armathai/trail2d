@@ -1,10 +1,10 @@
 import { DisplayObjectEvents, IPoint, MeshMaterial, Point } from 'pixi.js';
+import { TrailMaterial } from '../materials/trail-material';
 import { IDisplayObjectLike, TrailConfig } from '../types';
 import { getSquareDistanceBetweenPoints } from '../utils';
 import { SimplePool } from '../utils/pools';
 import { RopeComponent } from './rope-component';
 import { TrailGeometry } from './trail-geometry';
-import { TrailMaterial } from './trail-material';
 
 export class TrailComponent extends RopeComponent {
     public static readonly onCollapsed: string = 'onCollapsed';
@@ -17,10 +17,10 @@ export class TrailComponent extends RopeComponent {
     private _lifeSpan: number;
     private _minimalSquareDistance: number;
 
-    public constructor(config: TrailConfig) {
-        const { lifeSpan, minimalSquareDistance, sharpness, trailWidth, material } = config;
+    public constructor(config: TrailConfig, material: TrailMaterial) {
+        const { lifeSpan, minimalSquareDistance, trailWidth, sharpness } = config;
 
-        super([new Point(0, 0)], new TrailMaterial(material, trailWidth, sharpness));
+        super([new Point(0, 0)], material, trailWidth, sharpness);
 
         this._lifeSpan = lifeSpan;
         this._minimalSquareDistance = minimalSquareDistance;
