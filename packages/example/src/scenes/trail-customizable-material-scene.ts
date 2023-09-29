@@ -11,7 +11,7 @@ export class TrailCustomizableMaterialScene extends SceneAbstract {
         super();
 
         const ball = new Container();
-        this.addChild(ball);
+        this.addChild((this._ball = ball));
         ball.y = 22;
         ball.x = -70;
 
@@ -43,7 +43,9 @@ export class TrailCustomizableMaterialScene extends SceneAbstract {
         );
         this.addChild((this._trail = trail));
         // trail.setDebugger(true);
-        trail.attachObject((this._ball = ball));
+        setTimeout(() => {
+            trail.attachObject(ball);
+        }, 100);
     }
 
     public update(elapsed: number): void {

@@ -1,4 +1,4 @@
-import { Graphics, IPoint, Mesh, Point, Renderer } from 'pixi.js';
+import { Color, Graphics, IPoint, Mesh, Point, Renderer } from 'pixi.js';
 import { TrailMaterial } from '../materials/trail-material';
 import { TrailGeometry } from './trail-geometry';
 
@@ -31,6 +31,16 @@ export class RopeComponent extends Mesh {
          * @member {boolean}
          */
         this.autoUpdate = true;
+    }
+
+    public setAlpha(value: number): void {
+        this.alpha = value;
+        this.shader.uniforms['uAlpha'] = value;
+    }
+
+    public setTint(value: number): void {
+        this.tint = value;
+        this.shader.uniforms['uTint'] = new Float32Array([...new Color(value).toRgbArray(), 1]);
     }
 
     public addPoint(point: IPoint): void {

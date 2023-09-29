@@ -14,19 +14,12 @@ export class TrailGeometry extends MeshGeometry {
         );
         this.points = points;
 
-        // this.textureScale = textureScale; // ToDo: solve this issue
-
         this._build();
         this.updateAttributes();
     }
 
     public update(): void {
-        // if (this.textureScale > 0) {
-        //     this._build(); // we need to update UVs
-        //     this.updateAttributes();
-        // } else {
-        //     // this.updateVertices();
-        // }
+        //
     }
 
     public addPoint(point: IPoint): void {
@@ -61,7 +54,7 @@ export class TrailGeometry extends MeshGeometry {
 
         for (let i = 0; i < points.length; i++) {
             // UVs
-            const uv = i === 0 ? 0 : i / (points.length - 1);
+            const uv = i / (points.length - 1);
 
             uvsData[i * 4] = uv;
             uvsData[i * 4 + 1] = 0;
@@ -69,49 +62,43 @@ export class TrailGeometry extends MeshGeometry {
             uvsData[i * 4 + 3] = 1;
 
             // Vertices Buffer
-            verticesData[i * 4] = 0;
-            verticesData[i * 4 + 1] = 0;
-            verticesData[i * 4 + 2] = 0;
-            verticesData[i * 4 + 3] = 0;
+            verticesData[i * 4] = points[i].x;
+            verticesData[i * 4 + 1] = points[i].y;
+            verticesData[i * 4 + 2] = points[i].x;
+            verticesData[i * 4 + 3] = points[i].y;
 
             // Ids buffer
             idsData[i * 2] = i * 2;
             idsData[i * 2 + 1] = i * 2 + 1;
 
-            // Data buffer
-            data[i * 8] = points[i].x;
-            data[i * 8 + 1] = points[i].y;
-            data[i * 8 + 4] = points[i].x;
-            data[i * 8 + 5] = points[i].y;
-            if (points[i + 1]) {
-                data[i * 8 + 2] = points[i + 1].x;
-                data[i * 8 + 3] = points[i + 1].y;
-                data[i * 8 + 6] = points[i + 1].x;
-                data[i * 8 + 7] = points[i + 1].y;
-            } else {
-                data[i * 8 + 2] = points[i - 1].x;
-                data[i * 8 + 3] = points[i - 1].y;
-                data[i * 8 + 6] = points[i - 1].x;
-                data[i * 8 + 7] = points[i - 1].y;
-            }
+            // Data buffer (stores previousPoint and nextPoint)
+            data[i * 8 + 0] = points[i - 1] ? points[i - 1].x : points[i + 1].x;
+            data[i * 8 + 1] = points[i - 1] ? points[i - 1].y : points[i + 1].y;
+            data[i * 8 + 4] = points[i - 1] ? points[i - 1].x : points[i + 1].x;
+            data[i * 8 + 5] = points[i - 1] ? points[i - 1].y : points[i + 1].y;
 
-            // indices buffer
-            if (i !== 0) {
-                const c = i * 2;
-                const b = c - 1;
-                const a = b - 1;
+            data[i * 8 + 2] = points[i + 1] ? points[i + 1].x : points[i - 1].x;
+            data[i * 8 + 3] = points[i + 1] ? points[i + 1].y : points[i - 1].y;
+            data[i * 8 + 6] = points[i + 1] ? points[i + 1].x : points[i - 1].x;
+            data[i * 8 + 7] = points[i + 1] ? points[i + 1].y : points[i - 1].y;
 
-                const f = i * 2 + 1;
-                const e = f - 1;
-                const d = e - 1;
+            // Indices buffer
+            // if (i !== 0) {
+            const c = i * 2;
+            const b = c - 1;
+            const a = b - 1;
 
-                indicesData[(i - 1) * 6] = a;
-                indicesData[(i - 1) * 6 + 1] = b;
-                indicesData[(i - 1) * 6 + 2] = c;
-                indicesData[(i - 1) * 6 + 3] = e;
-                indicesData[(i - 1) * 6 + 4] = d;
-                indicesData[(i - 1) * 6 + 5] = f;
-            }
+            const f = i * 2 + 1;
+            const e = f - 1;
+            const d = e - 1;
+
+            indicesData[(i - 1) * 6] = a;
+            indicesData[(i - 1) * 6 + 1] = b;
+            indicesData[(i - 1) * 6 + 2] = c;
+            indicesData[(i - 1) * 6 + 3] = e;
+            indicesData[(i - 1) * 6 + 4] = d;
+            indicesData[(i - 1) * 6 + 5] = f;
+            // }
         }
 
         vertexBuffer.update(verticesData);

@@ -4,7 +4,6 @@ export { TrailCustomizableMaterial } from './materials/trail-customizable-materi
 export { TrailMaterial } from './materials/trail-material';
 export {
     TRAIL_CUSTOMIZABLE_FRAGMENT_SHADER,
-    TRAIL_CUSTOMIZABLE_VERTEX_SHADER,
     TRAIL_DEFAULT_FRAGMENT_SHADER,
     TRAIL_DEFAULT_VERTEX_SHADER,
 } from './shaders/shaders';

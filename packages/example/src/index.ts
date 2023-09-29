@@ -4,6 +4,7 @@ import { RopeBasicScene } from './scenes/rope-basic-scene';
 import { SceneAbstract } from './scenes/scene-abstract';
 import { TrailBasicScene } from './scenes/trail-basic-scene';
 import { TrailCustomizableMaterialScene } from './scenes/trail-customizable-material-scene';
+import { TrailFollowMouseScene } from './scenes/trail-follow-mouse-scene';
 import { TrailPerformanceScene } from './scenes/trail-performance-scene';
 
 class Game extends Application<HTMLCanvasElement> {
@@ -20,14 +21,16 @@ window.addEventListener('load', () => {
 
     const game = new Game();
     document.body.appendChild(game.view);
+    window.game = game;
 
     let scene: Container;
     let exampleName: string;
 
-    exampleName = 'simpleTrail';
     exampleName = 'customMaterial';
+    exampleName = 'mouseFollowing';
     exampleName = 'performance';
     exampleName = 'rope';
+    exampleName = 'simpleTrail';
 
     switch (exampleName) {
         case 'rope':
@@ -41,6 +44,9 @@ window.addEventListener('load', () => {
             break;
         case 'performance':
             scene = new TrailPerformanceScene();
+            break;
+        case 'mouseFollowing':
+            scene = new TrailFollowMouseScene();
             break;
 
         default:

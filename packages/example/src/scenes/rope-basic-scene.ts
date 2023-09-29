@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { RopeComponent, TrailMaterial } from '@armathai/pixi-trail';
 import { Point, Texture } from 'pixi.js';
-import stripes from '../../assets/sprite.png';
+import letters from '../../assets/letters.png';
 import { SceneAbstract } from './scene-abstract';
 
 export class RopeBasicScene extends SceneAbstract {
@@ -19,7 +19,7 @@ export class RopeBasicScene extends SceneAbstract {
                 new Point(370, 110),
                 new Point(440, 160),
             ],
-            new TrailMaterial(Texture.from(stripes)),
+            new TrailMaterial(Texture.from(letters)),
             50
         );
         this.addChild((this._rope = rope));

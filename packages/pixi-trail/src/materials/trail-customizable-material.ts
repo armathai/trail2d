@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Color, MeshMaterial, Program, Texture } from 'pixi.js';
-import { TRAIL_CUSTOMIZABLE_FRAGMENT_SHADER, TRAIL_CUSTOMIZABLE_VERTEX_SHADER } from '../shaders/shaders';
+import { TRAIL_CUSTOMIZABLE_FRAGMENT_SHADER, TRAIL_DEFAULT_VERTEX_SHADER } from '../shaders/shaders';
 import { TrailMaterialConfig } from '../types';
 
 export class TrailCustomizableMaterial extends MeshMaterial {
@@ -25,6 +25,9 @@ export class TrailCustomizableMaterial extends MeshMaterial {
         } = config;
 
         const uniforms = {
+            uAlpha: 1,
+            uTint: new Float32Array([...new Color(0xffffff).toRgbArray(), 1]),
+
             rough,
             latitudeColorA: new Float32Array([...new Color(latitudeColorA).toRgbArray(), a_latitudeColorA]),
             latitudeColorB: new Float32Array([...new Color(latitudeColorB).toRgbArray(), a_latitudeColorB]),
@@ -42,7 +45,7 @@ export class TrailCustomizableMaterial extends MeshMaterial {
 
         super(Texture.WHITE, {
             uniforms,
-            program: new Program(TRAIL_CUSTOMIZABLE_VERTEX_SHADER, TRAIL_CUSTOMIZABLE_FRAGMENT_SHADER),
+            program: new Program(TRAIL_DEFAULT_VERTEX_SHADER, TRAIL_CUSTOMIZABLE_FRAGMENT_SHADER),
         });
     }
 }

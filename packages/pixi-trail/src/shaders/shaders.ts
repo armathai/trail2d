@@ -3,7 +3,8 @@ precision highp float;
 
 attribute vec2 aTextureCoord;
 
-attribute vec4 aVertexData; // xy:nodePosition, zw:neighborNodePosition
+attribute vec4 aVertexData; // xy:prevNeighborNodePosition, zw:nextNeighborNodePosition
+attribute vec2 aVertexPosition; // xy:nodePosition
 attribute float aVertexId;
 
 uniform mat3 translationMatrix;
@@ -13,34 +14,36 @@ uniform int uNodesCount;
 
 varying vec2 vUvs;
 
-void main() {
-    vUvs = aTextureCoord;
-    int nodeIndex = int(floor(aVertexId / 2.0));
-    vec2 nodePosition = aVertexData.xy;
-    vec2 neighborNodePosition = aVertexData.zw;
-    
-    vec2 bone2D;
-    
-    if (int(aVertexId) == uNodesCount * 2 || int(aVertexId) == (uNodesCount * 2 + 1)) {
-      bone2D = nodePosition - neighborNodePosition;
-    } else {
-      bone2D = neighborNodePosition - nodePosition;
-    }
-
+vec2 calculateDirection(vec2 bone2D) {
     vec3 bone3D = vec3(bone2D, 0.0);
     vec3 normal = vec3(0.0, 0.0, 1.0);
     vec3 direction = cross(normal, normalize(bone3D));
     vec2 dir2D = direction.xy;
+
+    return dir2D;
+}
+
+void main() {
+    vUvs = aTextureCoord;
     float interpolation = 1.0;
-
-    vec2 vertexPos;
-
-    if (mod(aVertexId, 2.0) == 0.0) {
-        vertexPos = nodePosition - dir2D * uTrailWidth / 2.0 * interpolation;
-    } else {
-        vertexPos = nodePosition + dir2D * uTrailWidth / 2.0 * interpolation;
+    int nodeIndex = int(floor(aVertexId / 2.0));
+    
+    // Form nexBone and prevBone, considering that first and last points only has one of them
+    vec2 prevBone2D = aVertexData.xy - aVertexPosition;
+    vec2 nextBone2D = aVertexPosition - aVertexData.zw;
+    if (nodeIndex == 0) {
+        prevBone2D = nextBone2D;
+    } else if (int(aVertexId) >= uNodesCount * 2) {
+        nextBone2D = prevBone2D;
     }
+    // ..........
 
+    vec2 dir2DNext = normalize(calculateDirection(nextBone2D));
+    vec2 dir2DPrev = normalize(calculateDirection(prevBone2D));
+    vec2 dir2D = normalize(dir2DNext + dir2DPrev);
+
+    float side = -(mod(aVertexId, 2.0) - 0.5) * 2.0; // equal to -1 or 1
+    vec2 vertexPos = aVertexPosition + (side * dir2D) * uTrailWidth / 2.0 * interpolation;
 
     gl_Position = vec4((projectionMatrix * translationMatrix * vec3(vertexPos.xy, 1.0)).xy, 0.0, 1.0);
 }
@@ -52,61 +55,11 @@ precision highp float;
 varying vec2 vUvs;
 
 uniform sampler2D uSampler;
+uniform float uAlpha;
+uniform vec4 uTint;
 
 void main() {
-  gl_FragColor = texture2D(uSampler, vUvs);
-}
-`;
-
-export const TRAIL_CUSTOMIZABLE_VERTEX_SHADER = /* glsl */ `
-precision highp float;
-
-attribute vec2 aTextureCoord;
-attribute vec4 aVertexData;
-attribute float aVertexId;
-
-uniform mat3 translationMatrix;
-uniform mat3 projectionMatrix;
-uniform float uTrailWidth;
-uniform bool uSharpness;
-uniform int uNodesCount;
-
-varying vec2 vUvs;
-
-void main() {
-    vUvs = aTextureCoord;
-    int nodeIndex = int(floor(aVertexId / 2.0));
-    vec2 nodePosition = aVertexData.xy;
-    vec2 neighborNodePosition = aVertexData.zw;
-    
-    vec2 bone2D;
-    
-    if (int(aVertexId) == uNodesCount * 2 || int(aVertexId) == (uNodesCount * 2 + 1)) {
-      bone2D = nodePosition - neighborNodePosition;
-    } else {
-      bone2D = neighborNodePosition - nodePosition;
-    }
-
-    vec3 bone3D = vec3(bone2D, 0.0);
-    vec3 normal = vec3(0.0, 0.0, 1.0);
-    vec3 direction = cross(normal, normalize(bone3D));
-    vec2 dir2D = direction.xy;
-    float interpolation = 1.0;
-
-    if (uSharpness) {
-        interpolation = pow(float(nodeIndex) / float(uNodesCount), 1.0 / 2.0);
-    }
-
-    vec2 vertexPos;
-
-    if (mod(aVertexId, 2.0) == 0.0) {
-        vertexPos = nodePosition - dir2D * uTrailWidth / 2.0 * interpolation;
-    } else {
-        vertexPos = nodePosition + dir2D * uTrailWidth / 2.0 * interpolation;
-    }
-
-
-    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(vertexPos.xy, 1.0)).xy, 0.0, 1.0);
+  gl_FragColor = texture2D(uSampler, vUvs) * uAlpha * uTint;
 }
 `;
 
@@ -116,6 +69,8 @@ precision highp float;
 varying vec2 vUvs;
 
 uniform sampler2D uSampler2;
+uniform float uAlpha;
+uniform vec4 uTint;
 
 uniform vec4 latitudeColorA;
 uniform vec4 latitudeColorB;
@@ -161,6 +116,6 @@ void main() {
 
   vec4 longitudeColor = mix(longitudeColorA, longitudeColorB, 1.0 - vUvs.x);
   
-  gl_FragColor = latitudeColor * longitudeColor * longitudeAlpha * latitudinalAlpha;
+  gl_FragColor = latitudeColor * longitudeColor * longitudeAlpha * latitudinalAlpha * uAlpha * uTint;
 }
 `;

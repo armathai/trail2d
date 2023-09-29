@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { TrailComponent, TrailMaterial } from '@armathai/pixi-trail';
-import { Container, Texture } from 'pixi.js';
+import { Container, FederatedPointerEvent, Texture } from 'pixi.js';
 import stripes from '../../assets/letters.png';
 import { SceneAbstract } from './scene-abstract';
 
-export class TrailBasicScene extends SceneAbstract {
+export class TrailFollowMouseScene extends SceneAbstract {
     private _trail: TrailComponent;
     private _ball: Container;
 
@@ -30,12 +30,19 @@ export class TrailBasicScene extends SceneAbstract {
         setTimeout(() => {
             trail.attachObject(ball);
         }, 100);
+
+        const { game } = window;
+        game.stage.eventMode = 'static';
+        game.stage.hitArea = game.screen;
+        game.stage.addEventListener('pointermove', this._onPointerMove);
     }
 
     public update(elapsed: number): void {
-        this.x = -this._ball.x * this.scale.x + 400;
         this._trail.update(elapsed);
-        this._ball.x = -70 + elapsed * 0.5;
-        this._ball.y = 300 + Math.sin(elapsed * 0.005) * 100;
     }
+
+    private _onPointerMove = (e: FederatedPointerEvent): void => {
+        const { x, y } = e.global;
+        this._ball.position.set(x, y);
+    };
 }

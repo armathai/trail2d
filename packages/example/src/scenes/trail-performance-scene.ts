@@ -31,7 +31,9 @@ export class TrailPerformanceScene extends SceneAbstract {
             );
 
             this.addChild(trail);
-            trail.attachObject(ball);
+            setTimeout(() => {
+                trail.attachObject(ball);
+            }, 100);
 
             this._trails.push(trail);
             this._objects.push(ball);
